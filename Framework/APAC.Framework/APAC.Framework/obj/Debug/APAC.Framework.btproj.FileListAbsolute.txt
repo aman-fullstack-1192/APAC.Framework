@@ -4,3 +4,9 @@ C:\Users\amkumar\Documents\APAC_POC\Framework\APAC.Framework\APAC.Framework\bin\
 C:\Users\amkumar\Documents\APAC_POC\Framework\APAC.Framework\APAC.Framework\obj\Debug\APAC.Framework.dll
 C:\Users\amkumar\Documents\APAC_POC\Framework\APAC.Framework\APAC.Framework\obj\Debug\APAC.Framework.pdb
 C:\Users\amkumar\Documents\APAC_POC\Framework\APAC.Framework\APAC.Framework\bin\Debug\Logger\NLog.config
+C:\Users\amkumar\Desktop\Backup\FINAL\APAC.Framework\APAC.Framework\bin\Debug\NLog.dll
+C:\Users\amkumar\Desktop\Backup\FINAL\APAC.Framework\APAC.Framework\bin\Debug\Logger\NLog.config
+C:\Users\amkumar\Desktop\Backup\FINAL\APAC.Framework\APAC.Framework\bin\Debug\APAC.Framework.dll
+C:\Users\amkumar\Desktop\Backup\FINAL\APAC.Framework\APAC.Framework\bin\Debug\APAC.Framework.pdb
+C:\Users\amkumar\Desktop\Backup\FINAL\APAC.Framework\APAC.Framework\obj\Debug\APAC.Framework.dll
+C:\Users\amkumar\Desktop\Backup\FINAL\APAC.Framework\APAC.Framework\obj\Debug\APAC.Framework.pdb
