@@ -13,7 +13,7 @@ namespace APAC.Framework.HelperLibrary
     {
         #region Public Constants
         public const string LogDebug = "DEBUG";
-
+        public const string LogError = "ERROR";
 
         #endregion
 
@@ -67,9 +67,20 @@ namespace APAC.Framework.HelperLibrary
         }
         #endregion
 
-        public static void ScopeIn(string Scopename, string message)
+        public static long ScopeIn(string Scopename, string componentName, Guid traceToken, String projectName)
         {
-
+            long startTicks = DateTime.UtcNow.Ticks;
+            WriteNlogNetDetails(logman, String.Format("Scope - {0} Started", Scopename), componentName, ServiceNotSet, projectName, traceToken, SearchKeyNotSet, LogDebug);
+            return startTicks;
+            
+        }
+        
+        public static long ScopeOut(string Scopename, string componentName, Guid traceToken, String projectName, long startTicks)
+        {
+            TimeSpan elapsedSpan = new TimeSpan(DateTime.UtcNow.Ticks - startTicks);
+            long endTime = (long) elapsedSpan.TotalMilliseconds;
+            WriteNlogNetDetails(logman, String.Format("Scope - {0} ended in {1} ms", Scopename, endTime), componentName, ServiceNotSet, projectName, traceToken, SearchKeyNotSet, LogDebug);
+            return endTime;
         }
 
         public static void Debug(object message, string componentName, string projectName, Guid traceToken)
@@ -77,7 +88,17 @@ namespace APAC.Framework.HelperLibrary
             WriteNlogNetDetails(logman, message == null ? string.Empty : message.ToString(), componentName, ServiceNotSet, projectName, traceToken, SearchKeyNotSet, LogDebug);
         }
 
-        private static void WriteNlogNetDetails(Logger logger, string logtowrite, string componentName, string serviceName, string projectName, Guid traceToken,string searchKey, string logLevel, Exception exToLog = null)
+        public static void Error(object message, string componentName, string serviceName, string projectName, Exception ex, Guid traceToken, string searchKey)
+        {
+            WriteNlogNetDetails(logman, message == null ? string.Empty : message.ToString(), componentName, ServiceNotSet, projectName, traceToken, SearchKeyNotSet, LogError, 0, ex);
+        }
+
+        public static void Error(object message, string componentName, string projectName, Exception ex, Guid traceToken)
+        {
+            WriteNlogNetDetails(logman, message == null ? string.Empty : message.ToString(), componentName, ServiceNotSet, projectName, traceToken, SearchKeyNotSet, LogError, 0, ex);
+        }
+
+        private static void WriteNlogNetDetails(Logger logger, string logtowrite, string componentName, string serviceName, string projectName, Guid traceToken,string searchKey, string logLevel, int eventId = 0, Exception exToLog = null)
         {
             try
             {
@@ -88,6 +109,14 @@ namespace APAC.Framework.HelperLibrary
                         currentLogEvent = new LogEventInfo(LogLevel.Debug, logger.Name, "");
                         currentLogEvent.Message = logtowrite;
                         currentLogEvent = CreateNLogEvent(currentLogEvent, logtowrite, componentName, serviceName, projectName, traceToken, searchKey, logLevel);
+                        logger.Log(currentLogEvent);
+                        break;
+
+                    case LogError:
+                        currentLogEvent = new LogEventInfo(LogLevel.Error, logger.Name, "");
+                        currentLogEvent.Message = !string.IsNullOrWhiteSpace(logtowrite) ? logtowrite : (exToLog.InnerException).ToString();
+                        currentLogEvent.Exception = exToLog;
+                        currentLogEvent = CreateNLogEvent(currentLogEvent, logtowrite, componentName, serviceName, projectName, traceToken, searchKey, logLevel, eventId);
                         logger.Log(currentLogEvent);
                         break;
                     default:
@@ -115,7 +144,7 @@ namespace APAC.Framework.HelperLibrary
             }
         }
 
-        private static LogEventInfo CreateNLogEvent(LogEventInfo currentLogEvent, string logtowrite, string componentName, string serviceName, string projectName, Guid traceToken, string searchKey, string logLevel)
+        private static LogEventInfo CreateNLogEvent(LogEventInfo currentLogEvent, string logtowrite, string componentName, string serviceName, string projectName, Guid traceToken, string searchKey, string logLevel, int eventId = 0)
         {
             currentLogEvent.Properties["loggedAt"] = DateTime.UtcNow.ToString("yyyy.MM.dd HH:mm:ss:fff");
             currentLogEvent.Properties["serverName"] = Environment.MachineName;

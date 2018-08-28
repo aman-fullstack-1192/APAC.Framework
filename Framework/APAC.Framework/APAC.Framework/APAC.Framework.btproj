@@ -81,6 +81,7 @@
   <ItemGroup>
     <Content Include="Logger\NLog.config">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      <SubType>Designer</SubType>
     </Content>
     <None Include="Key.snk" />
     <Schema Include="Logger\NLog.xsd">
